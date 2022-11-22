@@ -1,0 +1,369 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Form</class>
+ <widget class="QWidget" name="Form">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1193</width>
+    <height>480</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>fixit</string>
+  </property>
+  <widget class="QFrame" name="frame">
+   <property name="geometry">
+    <rect>
+     <x>5</x>
+     <y>5</y>
+     <width>1191</width>
+     <height>481</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color: rgb(6, 68, 134);</string>
+   </property>
+   <property name="frameShape">
+    <enum>QFrame::StyledPanel</enum>
+   </property>
+   <property name="frameShadow">
+    <enum>QFrame::Raised</enum>
+   </property>
+   <widget class="QWidget" name="gridLayoutWidget">
+    <property name="geometry">
+     <rect>
+      <x>5</x>
+      <y>5</y>
+      <width>1176</width>
+      <height>466</height>
+     </rect>
+    </property>
+    <layout class="QGridLayout" name="gridLayout">
+     <item row="5" column="5">
+      <widget class="QPushButton" name="setHistPushButton">
+       <property name="styleSheet">
+        <string notr="true">background-color: rgb(255, 160, 166);</string>
+       </property>
+       <property name="text">
+        <string>Set it!</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="3">
+      <widget class="QLabel" name="currMessage">
+       <property name="styleSheet">
+        <string notr="true">color: rgb(255, 255, 255);</string>
+       </property>
+       <property name="text">
+        <string>Message space</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="3">
+      <widget class="QPushButton" name="getCurrPushButton">
+       <property name="styleSheet">
+        <string notr="true">background-color: rgb(216, 240, 255);</string>
+       </property>
+       <property name="text">
+        <string>Get Current Values</string>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="6">
+      <widget class="QLineEdit" name="timeLineEdit">
+       <property name="styleSheet">
+        <string notr="true">color: rgb(255, 255, 255);</string>
+       </property>
+       <property name="inputMask">
+        <string/>
+       </property>
+       <property name="text">
+        <string>HH:MM</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="6">
+      <widget class="QLineEdit" name="dateLineEdit">
+       <property name="styleSheet">
+        <string notr="true">color: rgb(255, 255, 255);</string>
+       </property>
+       <property name="inputMask">
+        <string/>
+       </property>
+       <property name="text">
+        <string>mm/dd/yyyy</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QLabel" name="label1">
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>14</pointsize>
+        </font>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">background: rgb(190, 229, 255);</string>
+       </property>
+       <property name="text">
+        <string>1. List PVs (%=wildcard)</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="7">
+      <spacer name="horizontalSpacer_4">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item row="4" column="5">
+      <widget class="QPushButton" name="getHistPushButton">
+       <property name="styleSheet">
+        <string notr="true">background-color: rgb(216, 240, 255);</string>
+       </property>
+       <property name="text">
+        <string>Get from...</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1">
+      <widget class="QPlainTextEdit" name="inputPVs">
+       <property name="styleSheet">
+        <string notr="true">background-color: rgb(255, 255, 255);</string>
+       </property>
+       <property name="plainText">
+        <string>Gimme some PVs!</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="3">
+      <widget class="QLabel" name="label2a">
+       <property name="font">
+        <font>
+         <pointsize>14</pointsize>
+        </font>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">background: rgb(190, 229, 255);</string>
+       </property>
+       <property name="text">
+        <string>2a. Get current values</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="3">
+      <widget class="QTextBrowser" name="currValsTextBrowser">
+       <property name="styleSheet">
+        <string notr="true">background-color: rgb(255, 255, 255);</string>
+       </property>
+       <property name="placeholderText">
+        <string>Ghosts of PVs Present</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="1">
+      <widget class="QPushButton" name="loadListPushButton">
+       <property name="styleSheet">
+        <string notr="true">background-color: rgb(216, 240, 255);</string>
+       </property>
+       <property name="text">
+        <string>Load PV list</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="1">
+      <widget class="QLabel" name="globalMessage">
+       <property name="styleSheet">
+        <string notr="true">color: rgb(255, 255, 255);</string>
+       </property>
+       <property name="text">
+        <string>Message space</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="4">
+      <spacer name="horizontalSpacer_2">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item row="3" column="5" colspan="2">
+      <widget class="QLabel" name="histMessage">
+       <property name="styleSheet">
+        <string notr="true">color: rgb(255, 255, 255);</string>
+       </property>
+       <property name="text">
+        <string>Message space</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="0">
+      <spacer name="verticalSpacer">
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>20</width>
+         <height>40</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item row="1" column="2">
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item row="1" column="0">
+      <spacer name="horizontalSpacer_3">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item row="4" column="7">
+      <spacer name="horizontalSpacer_5">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item row="2" column="5" colspan="2">
+      <widget class="QTextBrowser" name="histValsTextBrowser">
+       <property name="styleSheet">
+        <string notr="true">background-color: rgb(255, 255, 255);</string>
+       </property>
+       <property name="placeholderText">
+        <string>Ghosts of PVs Past</string>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="1">
+      <widget class="QPushButton" name="saveListPushButton">
+       <property name="styleSheet">
+        <string notr="true">background-color: rgb(216, 240, 255);</string>
+       </property>
+       <property name="text">
+        <string>Save PV list</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="5" colspan="2">
+      <widget class="QLabel" name="label2b">
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>14</pointsize>
+        </font>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">background: rgb(190, 229, 255);</string>
+       </property>
+       <property name="text">
+        <string>2b. Get values from archiver</string>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="3">
+      <widget class="QPushButton" name="setCurrPushButton">
+       <property name="styleSheet">
+        <string notr="true">background-color: rgb(255, 160, 166);</string>
+       </property>
+       <property name="text">
+        <string>Set it!</string>
+       </property>
+      </widget>
+     </item>
+     <item row="6" column="0">
+      <spacer name="verticalSpacer_2">
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>20</width>
+         <height>40</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
+   </widget>
+  </widget>
+ </widget>
+ <tabstops>
+  <tabstop>inputPVs</tabstop>
+  <tabstop>getCurrPushButton</tabstop>
+  <tabstop>dateLineEdit</tabstop>
+  <tabstop>timeLineEdit</tabstop>
+  <tabstop>getHistPushButton</tabstop>
+  <tabstop>setHistPushButton</tabstop>
+  <tabstop>setCurrPushButton</tabstop>
+  <tabstop>loadListPushButton</tabstop>
+  <tabstop>saveListPushButton</tabstop>
+  <tabstop>currValsTextBrowser</tabstop>
+  <tabstop>histValsTextBrowser</tabstop>
+ </tabstops>
+ <resources/>
+ <connections/>
+</ui>
