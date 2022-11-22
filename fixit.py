@@ -98,7 +98,7 @@ class MyDisplay(Display):
     try:
       histTime=datetime.datetime.strptime(self.pastDate+' '+self.pastTime,'%m/%d/%Y %H:%M')
     except:
-      self.histMessage.setText(f"Please enter valid date/time")
+      self.histMessage.setText(f"Please enter valid date (mm/dd/yyyy) & time (HH:MM)")
       return
 
 # Assemble formatted timestring
