@@ -95,7 +95,6 @@ class MyDisplay(Display):
         if '-' in indate:
           indate=indate.replace('-','/')
           parts=indate.split('/')
-          print(len(parts))
           if len(parts)>1 and len(parts[2])==2:
             parts[2]=str(int(parts[2])+2000)
           indate=parts[0]+'/'+parts[1]+'/'+parts[2]
