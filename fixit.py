@@ -85,6 +85,25 @@ class MyDisplay(Display):
     self.globalMessage.setText("Set PVs to 'Current' values")
 
     
+  def valiDate(self,indate,intime):
+    try:
+      point=datetime.datetime.strptime(indate+' '+intime,'%m/%d/%Y %H:%M')
+    except:
+      try:
+        point=datetime.datetime.strptime(indate+' '+intime,'%m/%d/%y %H:%M')
+      except:
+        if '-' in indate:
+          indate=indate.replace('-','/')
+          parts=indate.split('/')
+          if len(parts)>1 and len(parts[2])==2:
+            parts[2]=str(int(parts[2])+2000)
+          indate=parts[0]+'/'+parts[1]+'/'+parts[2]
+        try:
+          point=datetime.datetime.strptime(indate+' '+intime,'%m/%d/%Y %H:%M')
+        except:
+          point=f'Problems parsing {indate} {intime} as mm/dd/yyy hh:mm'
+    return point
+
   def getHist(self):
     self.globalMessage.setText("Getting archived values...")
     mdf=getenv('MATLABDATAFILES')
@@ -95,10 +114,9 @@ class MyDisplay(Display):
     self.makepvList()
     self.pastDate=self.dateLineEdit.text()
     self.pastTime=self.timeLineEdit.text()
-    try:
-      histTime=datetime.datetime.strptime(self.pastDate+' '+self.pastTime,'%m/%d/%Y %H:%M')
-    except:
-      self.histMessage.setText(f"Please enter valid date/time")
+    histTime=self.valiDate(self.pastDate,self.pastTime)
+    if type(histTime)==str:
+      self.histMessage.setText(histTime)
       return
 
 # Assemble formatted timestring
