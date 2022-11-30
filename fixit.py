@@ -114,14 +114,8 @@ class MyDisplay(Display):
 
   def getHist(self):
     self.globalMessage.setText("Getting archived values...")
-    if self.checkBoxShowChanged.isChecked():
-      showChanged=1
-    else:
-      showChanged=0
-    if self.checkBoxShowDeltas.isChecked():
-      showDeltas=1
-    else:
-      showDeltas=0
+    showChanged=True if self.checkBoxShowChanged.isChecked() else False
+    showDeltas=True if self.checkBoxShowDeltas.isChecked() else False
     if showChanged or showDeltas:
       self.getCurr()
     mdf=getenv('MATLABDATAFILES')
@@ -165,13 +159,15 @@ class MyDisplay(Display):
           delta=self.currVals[nn]
         else:
           delta=self.currVals[nn]-self.histVals[nn]
-      if (not showChanged or (showChanged & changed)) and showDeltas: 
-        if isinstance(self.currVals[nn],str):
-          outtext.append(f"{pv} was {self.histVals[-1]} now = {delta}")
+        
+      if (not showChanged or (showChanged and changed)):
+        if showDeltas: 
+          if isinstance(self.currVals[nn],str):
+            outtext.append(f"{pv} was {self.histVals[-1]} now = {delta}")
+          else:
+            outtext.append(f"{pv} was {self.histVals[-1]} now-then= {delta}")
         else:
-          outtext.append(f"{pv} was {self.histVals[-1]} now-then= {delta}")
-      elif (not showChanged or (showChanged and changed)) and not showDeltas:
-        outtext.append(f"{pv} was {self.histVals[-1]}")
+          outtext.append(f"{pv} was {self.histVals[-1]}")
     self.histValsTextBrowser.clear()
     self.histValsTextBrowser.append('\n'.join(outtext))
     self.histMessage.setText(f"from {histTime.strftime('%m/%d/%y %H:%M:%S')}")
