@@ -68,7 +68,10 @@ class MyDisplay(Display):
       self.currVals[self.currVals.index(None)]=np.nan
     for pp,pv in enumerate(self.pvList):
       try:
-        outtext.append(f"{pv} is {self.currVals[pp]:g}")
+        if isinstance(self.currVals[pp],str):
+          outtext.append(f"{pv} is {self.currVals[pp]}")
+        else:
+          outtext.append(f"{pv} is {self.currVals[pp]:g}")
       except:
         print(f"Problems with {pv} {self.currVals[pp]}")
     self.currValsTextBrowser.clear()
@@ -147,16 +150,26 @@ class MyDisplay(Display):
     resp.raise_for_status()
     for nn,pv in enumerate(self.pvList):
       try:
-        val = round(resp.json()[pv]['val'], 4)
+#        val = round(resp.json()[pv]['val'], 4)
+        val = resp.json()[pv]['val']
         self.histVals.append(val)
       except:
         self.histVals.append(np.nan)
       if showChanged:
-        changed=abs(self.histVals[nn]-self.currVals[nn])>self.diffTol
+        if isinstance(self.currVals[nn],str):
+          changed=(self.histVals[nn]!=self.currVals[nn])
+        else:
+          changed=abs(self.histVals[nn]-self.currVals[nn])>self.diffTol
       if showDeltas:
-        delta=self.currVals[nn]-self.histVals[nn]
-      if (not showChanged or (showChanged & changed)) and showDeltas:     
-        outtext.append(f"{pv} was {self.histVals[-1]} now-then= {delta}")
+        if isinstance(self.currVals[nn],str):
+          delta=self.currVals[nn]
+        else:
+          delta=self.currVals[nn]-self.histVals[nn]
+      if (not showChanged or (showChanged & changed)) and showDeltas: 
+        if isinstance(self.currVals[nn],str):
+          outtext.append(f"{pv} was {self.histVals[-1]} now = {delta}")
+        else:
+          outtext.append(f"{pv} was {self.histVals[-1]} now-then= {delta}")
       elif (not showChanged or (showChanged and changed)) and not showDeltas:
         outtext.append(f"{pv} was {self.histVals[-1]}")
     self.histValsTextBrowser.clear()
