@@ -9,6 +9,7 @@ from PyQt5.QtWidgets import QFileDialog
 class MyDisplay(Display):
   def __init__(self, parent=None, args=None, macros=None):
     super(MyDisplay, self).__init__(parent=parent,args=args, macros=macros)
+    self.diffTol=1e-5
     self.getCurrPushButton.clicked.connect(self.getCurr)
     self.getHistPushButton.clicked.connect(self.getHist)
     self.setCurrPushButton.clicked.connect(self.setCurr)
@@ -46,6 +47,10 @@ class MyDisplay(Display):
     self.globalMessage.setText("Getting current values...")
     self.makepvList()
     self.currVals=[]
+#    if self.checkBoxShowChanged.isChecked():
+#      showChanged=1
+#    if self.checkBoxShowDeltas.isChecked():
+#      showDeltas=1
     outtext=[]
     try:
       self.currVals=caget_many(self.pvList)
@@ -106,6 +111,16 @@ class MyDisplay(Display):
 
   def getHist(self):
     self.globalMessage.setText("Getting archived values...")
+    if self.checkBoxShowChanged.isChecked():
+      showChanged=1
+    else:
+      showChanged=0
+    if self.checkBoxShowDeltas.isChecked():
+      showDeltas=1
+    else:
+      showDeltas=0
+    if showChanged or showDeltas:
+      self.getCurr()
     mdf=getenv('MATLABDATAFILES')
     if 'lcls' in mdf:
       self.url=self.lclsUrl
@@ -130,13 +145,20 @@ class MyDisplay(Display):
     outtext=[]
     resp=requests.post(base_url,json=self.pvList)
     resp.raise_for_status()
-    for pv in self.pvList:
+    for nn,pv in enumerate(self.pvList):
       try:
         val = round(resp.json()[pv]['val'], 4)
         self.histVals.append(val)
       except:
         self.histVals.append(np.nan)
-      outtext.append(f"{pv} was {self.histVals[-1]}")
+      if showChanged:
+        changed=abs(self.histVals[nn]-self.currVals[nn])>self.diffTol
+      if showDeltas:
+        delta=self.currVals[nn]-self.histVals[nn]
+      if (not showChanged or (showChanged & changed)) and showDeltas:     
+        outtext.append(f"{pv} was {self.histVals[-1]} now-then= {delta}")
+      elif (not showChanged or (showChanged and changed)) and not showDeltas:
+        outtext.append(f"{pv} was {self.histVals[-1]}")
     self.histValsTextBrowser.clear()
     self.histValsTextBrowser.append('\n'.join(outtext))
     self.histMessage.setText(f"from {histTime.strftime('%m/%d/%y %H:%M:%S')}")
