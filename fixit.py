@@ -9,6 +9,7 @@ from PyQt5.QtWidgets import QFileDialog
 class MyDisplay(Display):
   def __init__(self, parent=None, args=None, macros=None):
     super(MyDisplay, self).__init__(parent=parent,args=args, macros=macros)
+    self.diffTol=1e-5
     self.getCurrPushButton.clicked.connect(self.getCurr)
     self.getHistPushButton.clicked.connect(self.getHist)
     self.setCurrPushButton.clicked.connect(self.setCurr)
@@ -46,6 +47,10 @@ class MyDisplay(Display):
     self.globalMessage.setText("Getting current values...")
     self.makepvList()
     self.currVals=[]
+#    if self.checkBoxShowChanged.isChecked():
+#      showChanged=1
+#    if self.checkBoxShowDeltas.isChecked():
+#      showDeltas=1
     outtext=[]
     try:
       self.currVals=caget_many(self.pvList)
@@ -63,7 +68,10 @@ class MyDisplay(Display):
       self.currVals[self.currVals.index(None)]=np.nan
     for pp,pv in enumerate(self.pvList):
       try:
-        outtext.append(f"{pv} is {self.currVals[pp]:g}")
+        if isinstance(self.currVals[pp],str):
+          outtext.append(f"{pv} is {self.currVals[pp]}")
+        else:
+          outtext.append(f"{pv} is {self.currVals[pp]:g}")
       except:
         print(f"Problems with {pv} {self.currVals[pp]}")
     self.currValsTextBrowser.clear()
@@ -106,6 +114,10 @@ class MyDisplay(Display):
 
   def getHist(self):
     self.globalMessage.setText("Getting archived values...")
+    showChanged=True if self.checkBoxShowChanged.isChecked() else False
+    showDeltas=True if self.checkBoxShowDeltas.isChecked() else False
+    if showChanged or showDeltas:
+      self.getCurr()
     mdf=getenv('MATLABDATAFILES')
     if 'lcls' in mdf:
       self.url=self.lclsUrl
@@ -130,13 +142,32 @@ class MyDisplay(Display):
     outtext=[]
     resp=requests.post(base_url,json=self.pvList)
     resp.raise_for_status()
-    for pv in self.pvList:
+    for nn,pv in enumerate(self.pvList):
       try:
-        val = round(resp.json()[pv]['val'], 4)
+#        val = round(resp.json()[pv]['val'], 4)
+        val = resp.json()[pv]['val']
         self.histVals.append(val)
       except:
         self.histVals.append(np.nan)
-      outtext.append(f"{pv} was {self.histVals[-1]}")
+      if showChanged:
+        if isinstance(self.currVals[nn],str):
+          changed=(self.histVals[nn]!=self.currVals[nn])
+        else:
+          changed=abs(self.histVals[nn]-self.currVals[nn])>self.diffTol
+      if showDeltas:
+        if isinstance(self.currVals[nn],str):
+          delta=self.currVals[nn]
+        else:
+          delta=self.currVals[nn]-self.histVals[nn]
+        
+      if (not showChanged or (showChanged and changed)):
+        if showDeltas: 
+          if isinstance(self.currVals[nn],str):
+            outtext.append(f"{pv} was {self.histVals[-1]} now = {delta}")
+          else:
+            outtext.append(f"{pv} was {self.histVals[-1]} now-then= {delta}")
+        else:
+          outtext.append(f"{pv} was {self.histVals[-1]}")
     self.histValsTextBrowser.clear()
     self.histValsTextBrowser.append('\n'.join(outtext))
     self.histMessage.setText(f"from {histTime.strftime('%m/%d/%y %H:%M:%S')}")
