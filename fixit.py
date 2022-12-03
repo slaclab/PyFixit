@@ -5,6 +5,10 @@ from epics import caget, caput, caget_many
 import datetime, pytz, requests, json
 import numpy as np
 from PyQt5.QtWidgets import QFileDialog
+from PyQt5.QtGui import QDoubleValidator
+
+
+
 
 class MyDisplay(Display):
   def __init__(self, parent=None, args=None, macros=None):
@@ -16,6 +20,10 @@ class MyDisplay(Display):
     self.setHistPushButton.clicked.connect(self.setHist)
     self.loadListPushButton.clicked.connect(self.loadList)
     self.saveListPushButton.clicked.connect(self.saveList)
+    # allow only integers
+    onlyDbl = QDoubleValidator()
+    self.minDeltaEnter.setValidator(onlyDbl)
+    self.minDeltaEnter.setText(f"{self.diffTol}")
     self.globalMessage.setText("Ready")
     self.histMessage.clear()
     self.currMessage.clear()
@@ -71,7 +79,7 @@ class MyDisplay(Display):
         if isinstance(self.currVals[pp],str):
           outtext.append(f"{pv} is {self.currVals[pp]}")
         else:
-          outtext.append(f"{pv} is {self.currVals[pp]:g}")
+          outtext.append(f"{pv} is {self.currVals[pp]:4g}")
       except:
         print(f"Problems with {pv} {self.currVals[pp]}")
     self.currValsTextBrowser.clear()
@@ -127,6 +135,13 @@ class MyDisplay(Display):
     self.pastDate=self.dateLineEdit.text()
     self.pastTime=self.timeLineEdit.text()
     histTime=self.valiDate(self.pastDate,self.pastTime)
+    now=datetime.datetime.now()
+    if histTime>now:
+      histTime=now
+      self.setnow=True
+      self.histMessage.setText('I cannot predict the future. Setting fetch time to now.')
+    else:
+      self.setnow=False
     if type(histTime)==str:
       self.histMessage.setText(histTime)
       return
@@ -153,6 +168,7 @@ class MyDisplay(Display):
         if isinstance(self.currVals[nn],str):
           changed=(self.histVals[nn]!=self.currVals[nn])
         else:
+          self.diffTol=float(self.minDeltaEnter.text())
           changed=abs(self.histVals[nn]-self.currVals[nn])>self.diffTol
       if showDeltas:
         if isinstance(self.currVals[nn],str):
@@ -163,14 +179,15 @@ class MyDisplay(Display):
       if (not showChanged or (showChanged and changed)):
         if showDeltas: 
           if isinstance(self.currVals[nn],str):
-            outtext.append(f"{pv} was {self.histVals[-1]} now = {delta}")
+            outtext.append(f"{pv} was {self.histVals[-1]:4g} now = {delta:4g}")
           else:
-            outtext.append(f"{pv} was {self.histVals[-1]} now-then= {delta}")
+            outtext.append(f"{pv} was {self.histVals[-1]:4g} now-then= {delta:4g}")
         else:
           outtext.append(f"{pv} was {self.histVals[-1]}")
     self.histValsTextBrowser.clear()
     self.histValsTextBrowser.append('\n'.join(outtext))
-    self.histMessage.setText(f"from {histTime.strftime('%m/%d/%y %H:%M:%S')}")
+    if not self.setnow:
+      self.histMessage.setText(f"from {histTime.strftime('%m/%d/%y %H:%M:%S')}")
     self.setHistPushButton.setEnabled(True)
     self.globalMessage.setText("Fetched archived values.")
     
