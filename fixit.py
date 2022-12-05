@@ -7,7 +7,7 @@ import numpy as np
 from PyQt5.QtWidgets import QFileDialog
 from PyQt5.QtGui import QDoubleValidator
 
-
+#"%e" % n if n and abs(log10(abs(n))) > 4 else ("%.4g" % n).rstrip("0"). rstrip(".")
 
 
 class MyDisplay(Display):
@@ -79,7 +79,7 @@ class MyDisplay(Display):
         if isinstance(self.currVals[pp],str):
           outtext.append(f"{pv} is {self.currVals[pp]}")
         else:
-          outtext.append(f"{pv} is {self.currVals[pp]:4g}")
+          outtext.append(f"{pv} is {self.currVals[pp]:.4g}")
       except:
         print(f"Problems with {pv} {self.currVals[pp]}")
     self.currValsTextBrowser.clear()
@@ -179,11 +179,14 @@ class MyDisplay(Display):
       if (not showChanged or (showChanged and changed)):
         if showDeltas: 
           if isinstance(self.currVals[nn],str):
-            outtext.append(f"{pv} was {self.histVals[-1]:4g} now = {delta:4g}")
+            outtext.append(f"{pv} was {self.histVals[-1]} now = {delta}")
           else:
-            outtext.append(f"{pv} was {self.histVals[-1]:4g} now-then= {delta:4g}")
+            outtext.append(f"{pv} was {self.histVals[-1]:.4g} now-then= {delta:.4g}")
         else:
-          outtext.append(f"{pv} was {self.histVals[-1]}")
+          if isinstance(self.histVals[-1],str):
+            outtext.append(f"{pv} was {self.histVals[-1]}")
+          else:
+            outtext.append(f"{pv} was {self.histVals[-1]:.4g}")
     self.histValsTextBrowser.clear()
     self.histValsTextBrowser.append('\n'.join(outtext))
     if not self.setnow:
