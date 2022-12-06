@@ -8,8 +8,6 @@ from PyQt5.QtWidgets import QFileDialog
 from PyQt5.QtGui import QDoubleValidator
 
 
-
-
 class MyDisplay(Display):
   def __init__(self, parent=None, args=None, macros=None):
     super(MyDisplay, self).__init__(parent=parent,args=args, macros=macros)
@@ -33,7 +31,8 @@ class MyDisplay(Display):
     self.facetUrl = "http://facet-archapp.slac.stanford.edu/retrieval/data/getDataAtTime?at="
     self.timezone = pytz.timezone('US/Pacific')
     self.cagetTimeOut=0.1
-
+    # values less than 1e-30 are set to 0
+    self.min_reality=1e-30
   def ui_filename(self):
     return('fixit.ui')
 
@@ -78,8 +77,12 @@ class MyDisplay(Display):
       try:
         if isinstance(self.currVals[pp],str):
           outtext.append(f"{pv} is {self.currVals[pp]}")
+        elif isinstance(self.currVals[pp],float):
+          if abs(self.currVals[pp])<self.min_reality:
+            self.currVals[pp]=0;
+          outtext.append(f"{pv} is {self.currVals[pp]:.4g}")
         else:
-          outtext.append(f"{pv} is {self.currVals[pp]:4g}")
+          outtext.append(f"{pv} is {self.currVals[pp]:g}")
       except:
         print(f"Problems with {pv} {self.currVals[pp]}")
     self.currValsTextBrowser.clear()
@@ -164,6 +167,9 @@ class MyDisplay(Display):
         self.histVals.append(val)
       except:
         self.histVals.append(np.nan)
+      if isinstance(self.histVals[nn],float):
+        if abs(self.histVals[nn])<self.min_reality:
+          self.histVals[nn]=0
       if showChanged:
         if isinstance(self.currVals[nn],str):
           changed=(self.histVals[nn]!=self.currVals[nn])
@@ -179,11 +185,14 @@ class MyDisplay(Display):
       if (not showChanged or (showChanged and changed)):
         if showDeltas: 
           if isinstance(self.currVals[nn],str):
-            outtext.append(f"{pv} was {self.histVals[-1]:4g} now = {delta:4g}")
+            outtext.append(f"{pv} was {self.histVals[-1]} now = {delta}")
           else:
-            outtext.append(f"{pv} was {self.histVals[-1]:4g} now-then= {delta:4g}")
+            outtext.append(f"{pv} was {self.histVals[-1]:.4g} now-then= {delta:.4g}")
         else:
-          outtext.append(f"{pv} was {self.histVals[-1]}")
+          if isinstance(self.histVals[-1],str):
+            outtext.append(f"{pv} was {self.histVals[-1]}")
+          else:
+            outtext.append(f"{pv} was {self.histVals[-1]:.4g}")
     self.histValsTextBrowser.clear()
     self.histValsTextBrowser.append('\n'.join(outtext))
     if not self.setnow:
