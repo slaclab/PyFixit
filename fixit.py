@@ -7,8 +7,6 @@ import numpy as np
 from PyQt5.QtWidgets import QFileDialog
 from PyQt5.QtGui import QDoubleValidator
 
-#"%e" % n if n and abs(log10(abs(n))) > 4 else ("%.4g" % n).rstrip("0"). rstrip(".")
-
 
 class MyDisplay(Display):
   def __init__(self, parent=None, args=None, macros=None):
@@ -33,7 +31,8 @@ class MyDisplay(Display):
     self.facetUrl = "http://facet-archapp.slac.stanford.edu/retrieval/data/getDataAtTime?at="
     self.timezone = pytz.timezone('US/Pacific')
     self.cagetTimeOut=0.1
-
+    # values less than 1e-30 are set to 0
+    self.min_reality=1e-30
   def ui_filename(self):
     return('fixit.ui')
 
@@ -78,8 +77,12 @@ class MyDisplay(Display):
       try:
         if isinstance(self.currVals[pp],str):
           outtext.append(f"{pv} is {self.currVals[pp]}")
-        else:
+        elif isinstance(self.currVals[pp],float):
+          if abs(self.currVals[pp])<self.min_reality:
+            self.currVals[pp]=0;
           outtext.append(f"{pv} is {self.currVals[pp]:.4g}")
+        else:
+          outtext.append(f"{pv} is {self.currVals[pp]:g}")
       except:
         print(f"Problems with {pv} {self.currVals[pp]}")
     self.currValsTextBrowser.clear()
@@ -164,6 +167,9 @@ class MyDisplay(Display):
         self.histVals.append(val)
       except:
         self.histVals.append(np.nan)
+      if isinstance(self.histVals[nn],float):
+        if abs(self.histVals[nn])<self.min_reality:
+          self.histVals[nn]=0
       if showChanged:
         if isinstance(self.currVals[nn],str):
           changed=(self.histVals[nn]!=self.currVals[nn])
