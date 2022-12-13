@@ -18,6 +18,7 @@ class MyDisplay(Display):
     self.setHistPushButton.clicked.connect(self.setHist)
     self.loadListPushButton.clicked.connect(self.loadList)
     self.saveListPushButton.clicked.connect(self.saveList)
+    self.clearPushButton.clicked.connect(self.clearText)
     # allow only integers
     onlyDbl = QDoubleValidator()
     self.minDeltaEnter.setValidator(onlyDbl)
@@ -38,6 +39,15 @@ class MyDisplay(Display):
 
   def ui_filepath(self):
     return path.join(path.dirname(path.realpath(__file__)), self.ui_filename())
+    
+  def clearText(self):
+    self.inputPVs.clear()
+    self.currValsTextBrowser.setPlaceholderText("")
+    self.histValsTextBrowser.setPlaceholderText("")
+    self.histValsTextBrowser.clear()
+    self.currValsTextBrowser.clear()
+    self.setCurrPushButton.setEnabled(False)
+    self.setHistPushButton.setEnabled(False)
     
   def makepvList(self):
     self.pvs = self.inputPVs.toPlainText().split()
