@@ -64,19 +64,6 @@
           </property>
          </widget>
         </item>
-        <item row="5" column="6">
-         <widget class="QLineEdit" name="dateLineEdit">
-          <property name="styleSheet">
-           <string notr="true">color: rgb(255, 255, 255);</string>
-          </property>
-          <property name="inputMask">
-           <string/>
-          </property>
-          <property name="text">
-           <string>mm/dd/yyyy</string>
-          </property>
-         </widget>
-        </item>
         <item row="6" column="3">
          <widget class="QPushButton" name="setCurrPushButton">
           <property name="styleSheet">
@@ -335,19 +322,6 @@
           </property>
          </widget>
         </item>
-        <item row="6" column="6">
-         <widget class="QLineEdit" name="timeLineEdit">
-          <property name="styleSheet">
-           <string notr="true">color: rgb(255, 255, 255);</string>
-          </property>
-          <property name="inputMask">
-           <string/>
-          </property>
-          <property name="text">
-           <string>HH:MM</string>
-          </property>
-         </widget>
-        </item>
         <item row="2" column="3">
          <widget class="QLabel" name="label2a">
           <property name="font">
@@ -400,6 +374,32 @@ Boxes</string>
           </property>
          </widget>
         </item>
+        <item row="5" column="6">
+         <widget class="QDateTimeEdit" name="dateTimeEdit">
+          <property name="styleSheet">
+           <string notr="true">background-color: rgb(255, 255, 255);</string>
+          </property>
+          <property name="displayFormat">
+           <string>M/d/yy hh:mm</string>
+          </property>
+          <property name="calendarPopup">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item row="6" column="6">
+         <widget class="QLabel" name="label">
+          <property name="styleSheet">
+           <string notr="true">color: rgb(255, 255, 255);</string>
+          </property>
+          <property name="text">
+           <string>Use 24-hr time &amp; arrow for pop-up</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
+         </widget>
+        </item>
        </layout>
       </item>
      </layout>
@@ -410,8 +410,6 @@ Boxes</string>
  <tabstops>
   <tabstop>inputPVs</tabstop>
   <tabstop>getCurrPushButton</tabstop>
-  <tabstop>dateLineEdit</tabstop>
-  <tabstop>timeLineEdit</tabstop>
   <tabstop>getHistPushButton</tabstop>
   <tabstop>setHistPushButton</tabstop>
   <tabstop>setCurrPushButton</tabstop>

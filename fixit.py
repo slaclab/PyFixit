@@ -6,6 +6,7 @@ import datetime, pytz, requests, json
 import numpy as np
 from PyQt5.QtWidgets import QFileDialog
 from PyQt5.QtGui import QDoubleValidator
+from PyQt5.QtCore import QDateTime
 
 
 class MyDisplay(Display):
@@ -34,6 +35,9 @@ class MyDisplay(Display):
     self.cagetTimeOut=0.1
     # values less than 1e-30 are set to 0
     self.min_reality=1e-30
+    now=QDateTime.currentDateTime()
+    self.dateTimeEdit.setDateTime(now.addDays(-1))
+    
   def ui_filename(self):
     return('fixit.ui')
 
@@ -50,6 +54,8 @@ class MyDisplay(Display):
     self.setHistPushButton.setEnabled(False)
     
   def makepvList(self):
+    if self.inputPVs.toPlainText()=='Gimme some PVs!':
+      self.clearText()
     self.pvs = self.inputPVs.toPlainText().split()
     self.pvList=[]
     for pv in self.pvs:
@@ -62,7 +68,13 @@ class MyDisplay(Display):
 
   def getCurr(self):
     self.globalMessage.setText("Getting current values...")
+    
     self.makepvList()
+    if len(self.pvList)==0:
+      self.currMessage.setText('no PVs to get')
+      self.globalMessage.setText('no PVs to get')
+      return
+      
     self.currVals=[]
 #    if self.checkBoxShowChanged.isChecked():
 #      showChanged=1
@@ -113,26 +125,6 @@ class MyDisplay(Display):
         print(f"Skipped {pv} because caget failed.")
     self.globalMessage.setText("Set PVs to 'Current' values")
 
-    
-  def valiDate(self,indate,intime):
-    try:
-      point=datetime.datetime.strptime(indate+' '+intime,'%m/%d/%Y %H:%M')
-    except:
-      try:
-        point=datetime.datetime.strptime(indate+' '+intime,'%m/%d/%y %H:%M')
-      except:
-        if '-' in indate:
-          indate=indate.replace('-','/')
-          parts=indate.split('/')
-          if len(parts)>1 and len(parts[2])==2:
-            parts[2]=str(int(parts[2])+2000)
-          indate=parts[0]+'/'+parts[1]+'/'+parts[2]
-        try:
-          point=datetime.datetime.strptime(indate+' '+intime,'%m/%d/%Y %H:%M')
-        except:
-          point=f'Problems parsing {indate} {intime} as mm/dd/yyy hh:mm'
-    return point
-
   def getHist(self):
     self.globalMessage.setText("Getting archived values...")
     showChanged=True if self.checkBoxShowChanged.isChecked() else False
@@ -144,10 +136,14 @@ class MyDisplay(Display):
       self.url=self.lclsUrl
     else:
       self.url=self.facetUrl
+      
     self.makepvList()
-    self.pastDate=self.dateLineEdit.text()
-    self.pastTime=self.timeLineEdit.text()
-    histTime=self.valiDate(self.pastDate,self.pastTime)
+    if len(self.pvList)==0:
+      self.histMessage.setText('no PVs to get')
+      self.globalMessage.setText('no PVs to get')
+      return
+      
+    histTime=self.dateTimeEdit.dateTime().toPyDateTime()
     now=datetime.datetime.now()
     if histTime>now:
       histTime=now
