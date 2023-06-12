@@ -192,8 +192,10 @@ class MyDisplay(Display):
         if showDeltas: 
           if isinstance(self.currVals[nn],str):
             outtext.append(f"{pv} was {self.histVals[-1]} now = {delta}")
-          else:
+          elif isinstance(delta,int) or isinstance(delta,float):
             outtext.append(f"{pv} was {self.histVals[-1]:.4g} now-then= {delta:.4g}")
+          else:
+            outtext.append(f"{pv} was {self.histVals[-1]:.4g} now-then= {delta}")
         else:
           if isinstance(self.histVals[-1],str):
             outtext.append(f"{pv} was {self.histVals[-1]}")
